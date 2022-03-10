@@ -35,6 +35,12 @@
       :elements-per-page="elementsPerPage"
       :rows="rows"
     />
+    <vc-donut
+      v-if="sections.length > 0"
+      :size="200" unit="px" :thickness="100"
+      hasLegend legendPlacement="bottom"
+      :sections="sections" :total="100"
+    />
   </div>
 </template>
 
@@ -56,7 +62,10 @@
       recordsPerPage: '',
       numberOfRecords: '',
       randWords: '',
-      resetVisible: false
+      resetVisible: false,
+      sections: [
+        { label: 'Example', value: 100, color: this.randomColor() }
+      ]
     }},
     methods: {
       confirm() {
@@ -71,7 +80,8 @@
           const words = this.randWords.split(',')
 
           for (let i = 1; i <= +this.numberOfRecords; i++) {
-            arr.push({id: i, title: `name${i}`, rand: words[random(0, words.length - 1)]})
+            const generatedWord = words[random(0, words.length - 1)].trim()
+            arr.push({id: i, title: `name${i}`, rand: generatedWord})
           }
 
           return arr
@@ -80,6 +90,24 @@
         this.rows = generateTableData()
         this.resetVisible = true
         this.elementsPerPage = +this.recordsPerPage
+
+        const generateChartData = () => {
+          const result = this.rows.map(el => el.rand).reduce((acc, el) => {
+            acc[el] = (acc[el] || 0) + 1
+            return acc
+          }, {})
+
+          const sections = []
+          const total = this.rows.length
+
+          for (const key in result) {
+            sections.push({ label: key, value: (result[key] / total * 100), color: this.randomColor() })
+          }
+
+          return sections
+        }
+
+        this.sections = generateChartData()
       },
 
       reset() {
@@ -88,12 +116,17 @@
         this.numberOfRecords = ''
         this.randWords = ''
         this.elementsPerPage = 1
+        this.sections = []
         this.rows = []
+      },
+
+      randomColor() {
+        return `#${Math.floor(Math.random() * 16777215).toString(16)}`
       }
     }
   }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 
 </style>

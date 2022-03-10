@@ -110,8 +110,10 @@
       }
     },
     watch: {
-      rows() {
+      elementsPerPage() {
         this.currentPage = 1
+        this.ascending = false
+        this.sortColumn = ''
       }
     }
   }
