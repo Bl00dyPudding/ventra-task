@@ -6,12 +6,13 @@
         <th
           v-for="col in columns"
           :key="col"
+          class="table-header"
           @click="sortTable(col)"
         >
           {{ col }}
           <i
             v-if="col === sortColumn"
-            :class="['bi', {'bi-arrow-up': ascending}, {'bi-arrow-down': !ascending}]"
+            :class="['bi', ascending ? 'bi-arrow-up' : 'bi-arrow-down']"
           />
         </th>
       </tr>
@@ -31,42 +32,53 @@
       </tbody>
     </table>
 
-    <ul class="pagination">
-      <li
-        v-for="i in numPages"
-        :key="i"
-        :class="['page-item', { 'active': i === currentPage }]"
-        @click="change_page(i)"
-      >
-        <a class="page-link">
-          {{ i }}
-        </a>
-      </li>
-    </ul>
+    <div class="d-flex justify-content-center">
+      <ul class="pagination">
+        <li
+            v-for="i in numPages"
+            :key="i"
+            :class="['page-item', { 'active': i === currentPage }]"
+            @click="changePage(i)"
+        >
+          <a class="page-link">
+            {{ i }}
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
   export default {
     name: 'VueTable',
+    props: {
+      rows: {
+        required: true,
+        type: Array,
+        default: () => []
+      },
+      elementsPerPage: {
+        required: true,
+        type: Number,
+        default: 1
+      },
+    },
     data() { return {
       ascending: false,
       sortColumn: '',
       currentPage: 1,
-      elementsPerPage: 1,
-      rows: [
-        {id: 1, name: 'hello21', rand: 'fffffff'},
-        {id: 2, name: 'hello2', rand: 'ffffffdsfdfsdff'}
-      ]
     }},
     computed: {
       columns() {
         if (this.rows.length === 0) return []
         return Object.keys(this.rows[0])
       },
+
       numPages() {
-        return Math.ceil(this.rows.length / this.elementsPerPage);
+        return Math.ceil(this.rows.length / this.elementsPerPage)
       },
+
       shownRows() {
         const start = ( this.currentPage - 1 ) * this.elementsPerPage
         const end = start + this.elementsPerPage
@@ -82,6 +94,7 @@
           this.sortColumn = col
         }
 
+        // eslint-disable-next-line
         this.rows.sort((a, b) => {
           if (a[col] > b[col]) {
             return this.ascending ? 1 : -1
@@ -91,15 +104,22 @@
           return 0
         })
       },
-      change_page(page) {
-        this.currentPage = page;
+
+      changePage(page) {
+        this.currentPage = page
       }
     },
+    watch: {
+      rows() {
+        this.currentPage = 1
+      }
+    }
   }
 </script>
 
 <style scoped>
-  th {
+  .table-header,
+  .page-item {
     cursor: pointer;
   }
 </style>
