@@ -1,46 +1,58 @@
 <template>
   <div id="app">
-    <input
-      v-model="numberOfRecords"
-      type="text"
-      placeholder="Количество записей"
-      class="form-control"
-    >
-    <input
-      v-model="recordsPerPage"
-      type="text"
-      placeholder="Записей на странице"
-      class="form-control"
-    >
-    <input
-      v-model="randWords"
-      type="text"
-      placeholder="Набор слов"
-      class="form-control"
-    >
-    <button
-      class="btn btn-primary"
-      @click="confirm()"
-    >
-      Применить
-    </button>
-    <button
-      v-if="resetVisible"
-      class="btn btn-secondary"
-      @click="reset()"
-    >
-      Сбросить
-    </button>
-    <VueTable
-      :elements-per-page="elementsPerPage"
-      :rows="rows"
-    />
-    <vc-donut
-      v-if="sections.length > 0"
-      :size="200" unit="px" :thickness="100"
-      hasLegend legendPlacement="bottom"
-      :sections="sections" :total="100"
-    />
+    <div class="container">
+      <div class="row mt-5">
+        <div class="col-8">
+          <div class="d-flex justify-content-center mb-2">
+            <input
+                v-model="numberOfRecords"
+                type="text"
+                placeholder="Количество записей"
+                class="form-control"
+            >
+            <input
+                v-model="recordsPerPage"
+                type="text"
+                placeholder="Записей на странице"
+                class="form-control"
+            >
+            <input
+                v-model="randWords"
+                type="text"
+                placeholder="Набор слов"
+                class="form-control"
+            >
+          </div>
+          <VueTable
+              :elements-per-page="elementsPerPage"
+              :rows="rows"
+          />
+        </div>
+        <div class="col">
+          <div class="d-flex justify-content-center mb-2">
+            <button
+                class="btn btn-primary"
+                @click="confirm()"
+            >
+              Применить
+            </button>
+            <button
+                v-if="resetVisible"
+                class="btn btn-secondary"
+                @click="reset()"
+            >
+              Сбросить
+            </button>
+          </div>
+          <vc-donut
+              v-if="sections.length > 0"
+              :size="200" unit="px" :thickness="100"
+              hasLegend legendPlacement="bottom"
+              :sections="sections" :total="100"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
